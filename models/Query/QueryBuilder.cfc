@@ -1,10 +1,10 @@
-import qb.models.Query.Builder;
-import qb.models.Query.Grammars.Grammar;
+import qb.models.Query.QueryBuilder;
+import qb.models.Grammars.Grammar;
 
 /**
 * Query Builder for fluently creating SQL queries.
 */
-component displayname="Builder" accessors="true" {
+component displayname="QueryBuilder" accessors="true" {
 
     /**
     * The specific grammar that will compile the builder statements.
@@ -133,16 +133,16 @@ component displayname="Builder" accessors="true" {
     /**
     * Creates an empty query builder.
     *
-    * @grammar The grammar to use when compiling queries. Default: qb.models.Query.Grammars.Grammar
+    * @grammar The grammar to use when compiling queries. Default: qb.models.Grammars.Grammar
     * @utils A collection of query utilities. Default: qb.models.Query.QueryUtils
     * @returnFormat the closure (or string format shortcut) that modifies the query and is eventually returned to the caller. Default: 'array'
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function init(
-        Grammar grammar = new qb.models.Query.Grammars.Grammar(),
-        QueryUtils utils = new qb.models.Query.QueryUtils(),
-        any returnFormat = "array"
+    public QueryBuilder function init(
+        grammar = new qb.models.Grammars.Grammar(),
+        utils = new qb.models.Query.QueryUtils(),
+        returnFormat = "array"
     ) {
         variables.grammar = arguments.grammar;
         variables.utils = arguments.utils;
@@ -177,9 +177,9 @@ component displayname="Builder" accessors="true" {
     /**
     * Sets the DISTINCT flag for the query.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function distinct() {
+    public QueryBuilder function distinct() {
         setDistinct( true );
 
         return this;
@@ -195,9 +195,9 @@ component displayname="Builder" accessors="true" {
     * and even set column aliases themselves (i.e. "some_column AS c")
     * Each value will be wrapped correctly, according to the database grammar being used.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function select( any columns = "*" ) {
+    public QueryBuilder function select( any columns = "*" ) {
         // This block is necessary for ACF 10.
         // It can't be extracted to a function because
         // the arguments struct doesn't get passed correctly.
@@ -221,9 +221,9 @@ component displayname="Builder" accessors="true" {
     * @alias The alias for the sub-select
     * @callback The callback to configure the sub-select.
     *
-    * @returns qb.models.Query.Builder
+    * @returns qb.models.Query.QueryBuilder
     */
-    public Builder function subSelect(
+    public QueryBuilder function subSelect(
         required string alias,
         required any callback
     ) {
@@ -246,9 +246,9 @@ component displayname="Builder" accessors="true" {
     * Each value will be wrapped correctly, according to the database grammar being used.
     * If no columns have been set, this column will overwrite the global "*".
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function addSelect( required any columns ) {
+    public QueryBuilder function addSelect( required any columns ) {
         // This block is necessary for ACF 10.
         // It can't be extracted to a function because
         // the arguments struct doesn't get passed correctly.
@@ -278,9 +278,9 @@ component displayname="Builder" accessors="true" {
     * Each value will be wrapped correctly, according to the database grammar being used.
     * If no columns have been set, this column will overwrite the global "*".
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function selectRaw(
+    public QueryBuilder function selectRaw(
         required any expression,
         array bindings = []
     ) {
@@ -300,9 +300,9 @@ component displayname="Builder" accessors="true" {
     *
     * @from The name of the table to from which the query is based.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function from( required string from ) {
+    public QueryBuilder function from( required string from ) {
         variables.from = arguments.from;
         return this;
     }
@@ -313,9 +313,9 @@ component displayname="Builder" accessors="true" {
     *
     * @table The name of the table to from which the query is based.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function table( required string table ) {
+    public QueryBuilder function table( required string table ) {
         variables.from = arguments.table;
         return this;
     }
@@ -338,9 +338,9 @@ component displayname="Builder" accessors="true" {
     * @type The type of the join. Default: "inner".  Passing this as an argument is discouraged for readability.  Use the dedicated methods like `leftJoin` and `rightJoin` where possible.
     * @where Sets if the value of `second` should be interpreted as a column or a value.  Passing this as an argument is discouraged.  Use the dedicated `joinWhere` or a join closure where possible.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function join(
+    public QueryBuilder function join(
         required string table,
         required any first,
         string operator = "=",
@@ -385,9 +385,9 @@ component displayname="Builder" accessors="true" {
     * @second The second column in the join's `on` statement.
     * @where Sets if the value of `second` should be interpreted as a column or a value.  Passing this as an argument is discouraged.  Use the dedicated `joinWhere` or a join closure where possible.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function leftJoin(
+    public QueryBuilder function leftJoin(
         required string table,
         string first,
         string operator,
@@ -411,9 +411,9 @@ component displayname="Builder" accessors="true" {
     * @second The second column in the join's `on` statement.
     * @where Sets if the value of `second` should be interpreted as a column or a value.  Passing this as an argument is discouraged.  Use the dedicated `joinWhere` or a join closure where possible.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function rightJoin(
+    public QueryBuilder function rightJoin(
         required string table,
         string first,
         string operator,
@@ -436,9 +436,9 @@ component displayname="Builder" accessors="true" {
     * @operator The boolean operator for the join clause. Default: "=".
     * @second The second column in the join's `on` statement.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function crossJoin(
+    public QueryBuilder function crossJoin(
         required string table,
         any first,
         string operator,
@@ -472,9 +472,9 @@ component displayname="Builder" accessors="true" {
     * @second The second column in the join's `on` statement.
     * @type The type of the join. Default: "inner".  Passing this as an argument is discouraged for readability.  Use the dedicated methods like `leftJoin` and `rightJoin` where possible.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function joinWhere(
+    public QueryBuilder function joinWhere(
         required string table,
         required any first,
         string operator,
@@ -497,9 +497,9 @@ component displayname="Builder" accessors="true" {
     * @value The value with which to constrain the column.  An expression (`builder.raw()`) can be passed as well.
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function where(
+    public QueryBuilder function where(
         column,
         operator,
         value,
@@ -554,9 +554,9 @@ component displayname="Builder" accessors="true" {
     * @callback The closure that defines the subquery. A new query will be passed to the closure as the only argument.
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    private Builder function whereSub(
+    private QueryBuilder function whereSub(
         column,
         operator,
         callback,
@@ -582,9 +582,9 @@ component displayname="Builder" accessors="true" {
     * @operator The operator to use for the constraint (i.e. "=", "<", ">=", etc.).  A value can be passed as the `operator` and the `value` left null as a shortcut for equals (e.g. where( "column", 1 ) == where( "column", "=", 1 ) ).
     * @value The value with which to constrain the column.  An expression (`builder.raw()`) can be passed as the value as well.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function orWhere( column, operator, value ) {
+    public QueryBuilder function orWhere( column, operator, value ) {
         arguments.combinator = "or";
         return where( argumentCollection = arguments );
     }
@@ -597,9 +597,9 @@ component displayname="Builder" accessors="true" {
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     * @negate False for IN, True for NOT IN. Default: false.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function whereIn(
+    public QueryBuilder function whereIn(
         column,
         values,
         combinator = "and",
@@ -637,9 +637,9 @@ component displayname="Builder" accessors="true" {
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     * @negate False for IN, True for NOT IN. Default: false.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    private Builder function whereInSub(
+    private QueryBuilder function whereInSub(
         column,
         callback,
         combinator = "and",
@@ -667,9 +667,9 @@ component displayname="Builder" accessors="true" {
     * @values The values with which to constrain the column. An expression (`builder.raw()`) can be passed as any of the values as well.
     * @negate False for IN, True for NOT IN. Default: false.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function orWhereIn( column, values, negate = false ) {
+    public QueryBuilder function orWhereIn( column, values, negate = false ) {
         arguments.combinator = "or";
         return whereIn( argumentCollection = arguments );
     }
@@ -681,9 +681,9 @@ component displayname="Builder" accessors="true" {
     * @values The values with which to constrain the column. An expression (`builder.raw()`) can be passed as any of the values as well.
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function whereNotIn( column, values, combinator = "and" ) {
+    public QueryBuilder function whereNotIn( column, values, combinator = "and" ) {
         arguments.negate = true;
         return whereIn( argumentCollection = arguments );
     }
@@ -694,9 +694,9 @@ component displayname="Builder" accessors="true" {
     * @column The name of the column with which to constrain the query. A closure can be passed to begin a nested where statement.
     * @values The values with which to constrain the column. An expression (`builder.raw()`) can be passed as any of the values as well.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function orWhereNotIn( column, values ) {
+    public QueryBuilder function orWhereNotIn( column, values ) {
         arguments.combinator = "or";
         arguments.negate = true;
         return whereIn( argumentCollection = arguments );
@@ -709,9 +709,9 @@ component displayname="Builder" accessors="true" {
     * @whereBindings Any bindings needed for the raw SQL. Default: [].
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function whereRaw(
+    public QueryBuilder function whereRaw(
         required string sql,
         array whereBindings = [],
         string combinator = "and"
@@ -733,9 +733,9 @@ component displayname="Builder" accessors="true" {
     * @sql The raw SQL to add to the query.
     * @whereBindings Any bindings needed for the raw SQL. Default: [].
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function orWhereRaw(
+    public QueryBuilder function orWhereRaw(
         required string sql,
         array whereBindings = []
     ) {
@@ -751,9 +751,9 @@ component displayname="Builder" accessors="true" {
     * @second The name of the second column to compare.
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function whereColumn( required first, operator, second, string combinator = "and" ) {
+    public QueryBuilder function whereColumn( required first, operator, second, string combinator = "and" ) {
         if ( isNull( arguments.second ) ) {
             arguments.second = arguments.operator;
             arguments.operator = "=";
@@ -784,9 +784,9 @@ component displayname="Builder" accessors="true" {
     * @operator The operator to use for the constraint (i.e. "=", "<", ">=", etc.).  A value can be passed as the `operator` and the `second` left null as a shortcut for equals (e.g. whereColumn( "columnA", "columnB" ) == where( "column", "=", "columnB" ) ).
     * @second The name of the second column to compare.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function orWhereColumn( required first, operator, second ) {
+    public QueryBuilder function orWhereColumn( required first, operator, second ) {
         arguments.combinator = "or";
         return whereColumn( argumentCollection = arguments );
     }
@@ -798,9 +798,9 @@ component displayname="Builder" accessors="true" {
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     * @negate False for EXISTS, True for NOT EXISTS. Default: false.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function whereExists(
+    public QueryBuilder function whereExists(
         callback,
         combinator = "and",
         negate = false
@@ -817,9 +817,9 @@ component displayname="Builder" accessors="true" {
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     * @negate False for EXISTS, True for NOT EXISTS. Default: false.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    private Builder function addWhereExistsQuery(
+    private QueryBuilder function addWhereExistsQuery(
         query,
         combinator = "and",
         negate = false
@@ -840,9 +840,9 @@ component displayname="Builder" accessors="true" {
     * @callback A callback to specify the query for the EXISTS clause.  It will be passed a query as the only argument.
     * @negate False for EXISTS, True for NOT EXISTS. Default: false.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function orWhereExists( callback, negate = false ) {
+    public QueryBuilder function orWhereExists( callback, negate = false ) {
         arguments.combinator = "or";
         return whereExists( argumentCollection = arguments );
     }
@@ -853,9 +853,9 @@ component displayname="Builder" accessors="true" {
     * @callback A callback to specify the query for the EXISTS clause.  It will be passed a query as the only argument.
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function whereNotExists( callback, combinator = "and" ) {
+    public QueryBuilder function whereNotExists( callback, combinator = "and" ) {
         arguments.negate = true;
         return whereExists( argumentCollection = arguments );
     }
@@ -865,9 +865,9 @@ component displayname="Builder" accessors="true" {
     *
     * @callback A callback to specify the query for the EXISTS clause.  It will be passed a query as the only argument.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function orWhereNotExists( callback ) {
+    public QueryBuilder function orWhereNotExists( callback ) {
         arguments.combinator = "or";
         arguments.negate = true;
         return whereExists( argumentCollection = arguments );
@@ -880,9 +880,9 @@ component displayname="Builder" accessors="true" {
     * @callback The callback that contains the nested query logic.
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    private Builder function whereNested( required callback, combinator = "and" ) {
+    private QueryBuilder function whereNested( required callback, combinator = "and" ) {
         var query = forNestedWhere();
         callback( query );
         return addNestedWhereQuery( query, combinator );
@@ -894,10 +894,10 @@ component displayname="Builder" accessors="true" {
     * @query The query to add as a nested WHERE statement
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    private Builder function addNestedWhereQuery(
-        required Builder query,
+    private QueryBuilder function addNestedWhereQuery(
+        required QueryBuilder query,
         string combinator = "and"
     ) {
         if ( ! query.getWheres().isEmpty() ) {
@@ -914,9 +914,9 @@ component displayname="Builder" accessors="true" {
     /**
     * Creates a new query scoped to the same table as the current query.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    private Builder function forNestedWhere() {
+    private QueryBuilder function forNestedWhere() {
         var query = newQuery();
         return query.from( getFrom() );
     }
@@ -928,9 +928,9 @@ component displayname="Builder" accessors="true" {
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     * @negate False for NULL, True for NOT NULL. Default: false.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function whereNull( column, combinator = "and", negate = false ) {
+    public QueryBuilder function whereNull( column, combinator = "and", negate = false ) {
         var type = negate ? "notNull" : "null";
         variables.wheres.append( {
             type = type,
@@ -946,9 +946,9 @@ component displayname="Builder" accessors="true" {
     * @column The name of the column to check if it is NULL.
     * @negate False for NULL, True for NOT NULL. Default: false.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function orWhereNull( column, negate = false ) {
+    public QueryBuilder function orWhereNull( column, negate = false ) {
         arguments.combinator = "or";
         return whereNull( argumentCollection = arguments );
     }
@@ -959,9 +959,9 @@ component displayname="Builder" accessors="true" {
     * @column The name of the column to check if it is NULL.
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function whereNotNull( column, combinator = "and" ) {
+    public QueryBuilder function whereNotNull( column, combinator = "and" ) {
         arguments.negate = true;
         return whereNull( argumentCollection = arguments );
     }
@@ -971,9 +971,9 @@ component displayname="Builder" accessors="true" {
     *
     * @column The name of the column to check if it is NULL.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function orWhereNotNull( column ) {
+    public QueryBuilder function orWhereNotNull( column ) {
         arguments.combinator = "or";
         arguments.negate = true;
         return whereNull( argumentCollection = arguments );
@@ -988,9 +988,9 @@ component displayname="Builder" accessors="true" {
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     * @negate False for BETWEEN, True for NOT BETWEEN. Default: false.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function whereBetween(
+    public QueryBuilder function whereBetween(
         column,
         start,
         end,
@@ -1021,9 +1021,9 @@ component displayname="Builder" accessors="true" {
     * @end The end value of the BETWEEN statement.
     * @negate False for BETWEEN, True for NOT BETWEEN. Default: false.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function orWhereBetween( column, start, end, negate = false ) {
+    public QueryBuilder function orWhereBetween( column, start, end, negate = false ) {
         arguments.combinator = "or";
         return whereBetween( argumentCollection = arguments );
     }
@@ -1036,9 +1036,9 @@ component displayname="Builder" accessors="true" {
     * @end The end value of the BETWEEN statement.
     * @combinator The boolean combinator for the clause (e.g. "and" or "or"). Default: "and"
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function whereNotBetween( column, start, end, combinator ) {
+    public QueryBuilder function whereNotBetween( column, start, end, combinator ) {
         arguments.negate = true;
         return whereBetween( argumentCollection = arguments );
     }
@@ -1050,9 +1050,9 @@ component displayname="Builder" accessors="true" {
     * @start The beginning value of the BETWEEN statement.
     * @end The end value of the BETWEEN statement.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function orWhereNotBetween( column, start, end, combinator ) {
+    public QueryBuilder function orWhereNotBetween( column, start, end, combinator ) {
         arguments.combinator = "or";
         arguments.negate = true;
         return whereBetween( argumentCollection = arguments );
@@ -1070,9 +1070,9 @@ component displayname="Builder" accessors="true" {
     * - variadic arguments
     * All the columns passed this way will be individually added to the query.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function groupBy() {
+    public QueryBuilder function groupBy() {
         // This block is necessary for ACF 10.
         // It can't be extracted to a function because
         // the arguments struct doesn't get passed correctly.
@@ -1097,9 +1097,9 @@ component displayname="Builder" accessors="true" {
     * @operator The operator to use for the constraint (i.e. "=", "<", ">=", etc.).  A value can be passed as the `operator` and the `value` left null as a shortcut for equals (e.g. where( "column", 1 ) == where( "column", "=", 1 ) ).
     * @value The value with which to constrain the column.  An expression (`builder.raw()`) can be passed as well.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function having(
+    public QueryBuilder function having(
         column,
         operator,
         value,
@@ -1144,9 +1144,9 @@ component displayname="Builder" accessors="true" {
     * @column The name of the column(s) to order by. An expression (`builder.raw()`) can be passed as well. An array can be passed with any combination of simple values, array, struct, or list for each entry in the array (an example with all possible value styles: column = [ "last_name", [ "age", "desc" ], { column = "favorite_color", direction = "desc" }, "height|desc" ];. The column argument can also just accept a comman delimited list with a pipe ( | ) as the secondary delimiter denoting the direction of the order by. The pipe delimiter is also used when parsing the column argument when it is passed as an array and the entry in the array is a pipe delimited string. 
     * @direction The direction by which to order the query.  Accepts "asc" OR "desc". Default: "asc". If column argument is an array this argument will be used as the default value for all entries in the column list or array that fail to specify a direction for a speicifc column.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function orderBy( required any column, string direction = "asc" ) {
+    public QueryBuilder function orderBy( required any column, string direction = "asc" ) {
 
         if ( getUtils().isExpression( column ) ) {
             variables.orders.append( {
@@ -1242,9 +1242,9 @@ component displayname="Builder" accessors="true" {
     *
     * @value The limit value for the query.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function limit( required numeric value ) {
+    public QueryBuilder function limit( required numeric value ) {
         variables.limitValue = value;
         return this;
     }
@@ -1255,9 +1255,9 @@ component displayname="Builder" accessors="true" {
     *
     * @value The limit value for the query.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function take( required numeric value ) {
+    public QueryBuilder function take( required numeric value ) {
         return limit( argumentCollection = arguments );
     }
 
@@ -1266,9 +1266,9 @@ component displayname="Builder" accessors="true" {
     *
     * @value The offset value for the query.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function offset( required numeric value ) {
+    public QueryBuilder function offset( required numeric value ) {
         variables.offsetValue = value;
         return this;
     }
@@ -1279,9 +1279,9 @@ component displayname="Builder" accessors="true" {
     * @pageNumber The page number to retrieve
     * @pageCount The number of records per page.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function forPage(
+    public QueryBuilder function forPage(
         required numeric pageNumber,
         required numeric pageCount
     ) {
@@ -1303,9 +1303,9 @@ component displayname="Builder" accessors="true" {
     * @onTrue A closure that will be triggered if the `condition` is true.
     * @onFlase A closure that will be triggered if the `condition` is false.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function when(
+    public QueryBuilder function when(
         required boolean condition,
         onTrue,
         onFalse
@@ -1328,9 +1328,9 @@ component displayname="Builder" accessors="true" {
     *
     * @callback A callback to execute with the current query.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function tap( required callback ) {
+    public QueryBuilder function tap( required callback ) {
         callback( duplicate( this ) );
         return this;
     }
@@ -1454,7 +1454,7 @@ component displayname="Builder" accessors="true" {
     * @options Any options to pass to `queryExecute`. Default: {}.
     * @toSql If true, returns the raw sql string instead of running the query.  Useful for debugging. Default: false.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
     public any function delete(
         any id,
@@ -1509,9 +1509,9 @@ component displayname="Builder" accessors="true" {
     /**
     * Clear all the bindings on the query.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    private Builder function clearBindings() {
+    private QueryBuilder function clearBindings() {
         variables.join = [];
         variables.where = [];
         variables.insert = [];
@@ -1525,9 +1525,9 @@ component displayname="Builder" accessors="true" {
     * @newBindings A single binding or an array of bindings to add for a given type.
     * @type The type of binding to add.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    private Builder function addBindings(
+    private QueryBuilder function addBindings(
         required any newBindings,
         string type = "where"
     ) {
@@ -1794,10 +1794,10 @@ component displayname="Builder" accessors="true" {
     /**
     * Creates a new query using the same Grammar and QueryUtils.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function newQuery() {
-        return new qb.models.Query.Builder(
+    public QueryBuilder function newQuery() {
+        return new qb.models.Query.QueryBuilder(
             grammar = getGrammar(),
             utils = getUtils()
         );
@@ -1831,9 +1831,9 @@ component displayname="Builder" accessors="true" {
     * 
     * @format "query", "array", or a closure.
     *
-    * @return qb.models.Query.Builder
+    * @return qb.models.Query.QueryBuilder
     */
-    public Builder function setReturnFormat( required any format ) {
+    public QueryBuilder function setReturnFormat( required any format ) {
         if ( isClosure( arguments.format ) || isCustomFunction( arguments.format ) ) {
             variables.returnFormat = format;
         }

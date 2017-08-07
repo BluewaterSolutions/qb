@@ -93,8 +93,8 @@ moduleSettings = {
 If you are not using WireBox, just make sure to wire up the `Builder` object with the correct grammar:
 
 ```
-var grammar = new qb.models.Query.Grammars.MySQLGrammar();
-var builder = new qb.models.Query.Builder( grammar );
+var grammar = new qb.models.Grammars.MySQLGrammar();
+var builder = new qb.models.Query.QueryBuilder( grammar );
 ```
 
 ### Return Format
